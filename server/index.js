@@ -38,7 +38,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
 	cors({
-		origin: 'https://headbox.netlify.app/', // URL de donde nos conectaremos con react
+		origin: 'https://headbox.netlify.app', // URL de donde nos conectaremos con react
 		credentials: true,
 	})
 );
