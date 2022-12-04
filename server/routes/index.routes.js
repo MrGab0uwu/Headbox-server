@@ -3,7 +3,11 @@ import { pool } from '../db.js';
 
 const router = Router();
 
-router.get('/', async (req, res) => {
+router.get('/', (req, res) => {
+	res.send('Welcome to Server');
+});
+
+router.get('/ping', async (req, res) => {
 	const [rows] = await pool.query('SELECT 1 + 1 as result');
 	console.log(rows);
 	res.json(rows);
