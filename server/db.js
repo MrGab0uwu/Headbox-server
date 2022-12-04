@@ -1,10 +1,11 @@
 import { createPool } from 'mysql2/promise';
+import { DB_HOST, DB_NAME, DB_PASSWORD, DB_USER, DB_PORT } from './config.js';
 
 // Pool tiene metodos para la conexcion con la base de datos
 export const pool = createPool({
-	host: '127.0.0.1',
-	port: 3306,
-	user: 'root',
-	password: 'aex1lol',
-	database: 'escuela',
+	host: DB_HOST,
+	port: DB_PORT,
+	user: DB_USER,
+	password: DB_PASSWORD,
+	database: DB_NAME,
 });
