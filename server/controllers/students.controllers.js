@@ -31,20 +31,13 @@ export const createStudent = async (req, res) => {
 	await connection.beginTransaction();
 	try {
 		const { mat_alu, nom_alu, edad_alu, sem_alu, gen_alu, clave_C1 } = req.body;
-		const [result] = await pool.query(
+		const [result] = await connection.query(
 			'INSERT INTO alumno(mat_alu,nom_alu,edad_alu,sem_alu,gen_alu,clave_C1) VALUES (?,?,?,?,?,?)',
 			[mat_alu, nom_alu, edad_alu, sem_alu, gen_alu, clave_C1]
 		);
-
-		res.json('succes', {
-			mat_alu,
-			nom_alu,
-			edad_alu,
-			sem_alu,
-			gen_alu,
-			clave_C1,
-		});
-		connection.commit();
+		console.log(result.insertId);
+		res.json(result);
+		await connection.commit();
 	} catch (error) {
 		connection.rollback();
 		return res.status(500).json({ message: error.message });
