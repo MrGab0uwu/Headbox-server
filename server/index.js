@@ -45,12 +45,12 @@ app.use(
 );
 app.use(
 	session({
-		secret: process.env.SESSION_SECRET,
+		secret: 'secretcode',
 		resave: true,
 		saveUninitialized: false,
 	})
 );
-app.use(cookieParser(process.env.SESSION_SECRET));
+app.use(cookieParser('secretcode'));
 
 app.use(passport.initialize());
 app.use(passport.session());

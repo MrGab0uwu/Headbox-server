@@ -27,9 +27,15 @@ export const getStudent = async (req, res) => {
 };
 
 export const createStudent = async (req, res) => {
+	const connection = await pool.getConnection();
+	await connection.query(
+		'SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;'
+	);
+	console.log('finish transc activating');
+	await connection.beginTransaction();
 	try {
 		const { mat_alu, nom_alu, edad_alu, sem_alu, gen_alu, clave_C1 } = req.body;
-		const [result] = await pool.query(
+		const [result] = await connection.query(
 			'INSERT INTO alumno(mat_alu,nom_alu,edad_alu,sem_alu,gen_alu,clave_C1) VALUES (?,?,?,?,?,?)',
 			[mat_alu, nom_alu, edad_alu, sem_alu, gen_alu, clave_C1]
 		);
@@ -42,7 +48,9 @@ export const createStudent = async (req, res) => {
 			gen_alu,
 			clave_C1,
 		});
+		await connection.commit();
 	} catch (error) {
+		connection.rollback();
 		return res.status(500).json({ message: error.message });
 	}
 };
