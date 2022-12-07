@@ -42,38 +42,55 @@ export const createStudent = async (req, res) => {
 		res.json(result);
 		await connection.commit();
 	} catch (error) {
-		connection.rollback();
+		await connection.rollback();
 		return res.status(500).json({ message: error.message });
 	}
 };
 
 export const updateStudent = async (req, res) => {
+	const connection = await pool.getConnection();
+	await connection.execute(
+		'SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE'
+	);
+	await connection.beginTransaction();
 	try {
 		const [result] = await pool.query('UPDATE alumno SET ? WHERE mat_alu = ?', [
 			req.body,
 			req.params.id,
 		]);
 
-		if (result.affectedRows === 0)
+		if (result.affectedRows === 0) {
+			await connection.rollback();
 			return res.status(404).json({ message: 'Student not found' });
+		}
 
 		res.send(result);
+		await connection.commit();
 	} catch (error) {
+		await connection.rollback();
 		return res.status(500).json({ message: error.message });
 	}
 };
 
 export const deleteStudent = async (req, res) => {
+	const connection = await pool.getConnection();
+	await connection.execute(
+		'SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE'
+	);
 	try {
 		const [result] = await pool.query('DELETE FROM alumno WHERE mat_alu = ?', [
 			req.params.id,
 		]);
 
-		if (result.affectedRows === 0)
+		if (result.affectedRows === 0) {
+			await connection.rollback();
 			return res.status(404).json({ message: 'Student not found' });
+		}
 
 		res.json(result);
+		await connection.commit();
 	} catch (error) {
+		await connection.rollback();
 		return res.status(500).json({ message: error.message });
 	}
 };
