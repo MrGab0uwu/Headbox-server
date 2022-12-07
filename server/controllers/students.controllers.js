@@ -40,7 +40,7 @@ export const createStudent = async (req, res) => {
 			[mat_alu, nom_alu, edad_alu, sem_alu, gen_alu, clave_C1]
 		);
 		console.log(result.insertId);
-		res.json({
+		res.json('creating...', {
 			mat_alu,
 			nom_alu,
 			edad_alu,
