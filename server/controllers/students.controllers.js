@@ -27,15 +27,15 @@ export const getStudent = async (req, res) => {
 };
 
 export const createStudent = async (req, res) => {
+	const connection = await pool.getConnection();
+	await connection.beginTransaction();
 	try {
-		await pool.query('SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE');
-		await pool.query('START TRANSACTION');
 		const { mat_alu, nom_alu, edad_alu, sem_alu, gen_alu, clave_C1 } = req.body;
 		const [result] = await pool.query(
 			'INSERT INTO alumno(mat_alu,nom_alu,edad_alu,sem_alu,gen_alu,clave_C1) VALUES (?,?,?,?,?,?)',
 			[mat_alu, nom_alu, edad_alu, sem_alu, gen_alu, clave_C1]
 		);
-		console.log(result.insertId);
+
 		res.json('succes', {
 			mat_alu,
 			nom_alu,
@@ -44,9 +44,9 @@ export const createStudent = async (req, res) => {
 			gen_alu,
 			clave_C1,
 		});
-		await pool.query('COMMIT');
+		connection.commit();
 	} catch (error) {
-		await pool.query('ROLLBACK');
+		connection.rollback();
 		return res.status(500).json({ message: error.message });
 	}
 };
